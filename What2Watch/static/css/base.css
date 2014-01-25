@@ -1,0 +1,8 @@
+#login {
+	background: url("/static/image/facebook_login_buttons/active_404.png") no-repeat;
+	border: none;
+	width: 202px;
+	height: 45px;
+	text-indent: 202px;
+	margin: 0.5em;
+}
