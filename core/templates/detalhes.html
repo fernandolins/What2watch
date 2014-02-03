@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="row-fluid page-header">
+      <!-- Navbar
+      ================================================== -->
+      <div class="bs-docs-section clearfix">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="page-header">
+              <h1 id="navbar">Filme</h1>
+            </div>
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                      <div class="panel-body">
+                        <span class="col-lg-4"><img src="{{ filme.link_foto }}"></span>
+                        <span class="col-lg-8">
+                            <p class="col-lg-12"><b>Name:</b> {{ filme.nome }}</p>
+                            <p class="col-lg-12"><b>Genero: </b>{{ filme.genero }}</p>
+                            <p class="col-lg-12"><b>Sinopse:</b> {{ filme.sinopse }}</p>
+                            <p class="col-lg-12"><b>Atores: </b>
+                            {% for ator in filme.atores.all %}
+                                {% if not forloop.first %}, {% endif %}{{ ator.nome }}
+                            {% endfor %}</p>
+                            <p class="col-lg-12"><b>Directors: </b>
+                            {% for diretor in filme.diretores.all %}
+                                {% if not forloop.first %}, {% endif %}{{ diretor.nome }}
+                            {% endfor %}</p>
+                            </p>
+                            <p class="col-lg-12"><b>Writers: </b>
+                            {% for escritor in filme.escritores.all %}
+                                {% if not forloop.first %}, {% endif %}{{ escritor.nome }}
+                            {% endfor %}</p>
+                            </p>
+                        </span>
+                      </div>
+                    </div>
+                </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block base_login %} 
+
+    <p class="text-right" style="color: white; margin-top: 1em;">
+        Olá, {{ usuario.facebook_nome }}! 
+        <a href="{% url 'logout' %}"> Logout</a>
+    </p>
+
+{% endblock %}
+
+
+{% block content %}
+
+	<div class="row-fluid page-header">
+      <!-- Navbar
+      ================================================== -->
+      <div class="bs-docs-section clearfix">
+        <div class="row">
+          <div class="col-lg-12">
+            <!-- <div class="page-header">
+              <h1 id="navbar">Filmes</h1>
+            </div> -->
+    		<ul class="nav nav-tabs page-header" style="margin-bottom: 15px;">
+                <li class="active"><a href="#home" data-toggle="tab">Recomendados</a></li>
+                <li><a href="#filmes" data-toggle="tab">Filmes</a></li>
+              </ul>
+              <div id="myTabContent" class="tab-content">
+                <div class="tab-pane fade active in" id="home">
+                    {% for item in filmes_recomendados %}
+                    <div class="col-lg-4">
+                        <div class="panel panel-default">
+                          <div class="panel-body">
+                            <p class="text-center"><img src="{{ item.filme.get_foto }}" height="200" width="150"></p>
+
+                            <p class="text-center" style="height: 40px;">
+                            Name: {{ item.filme.nome}}
+                            </p>
+                          </div>
+                          <div class="panel-footer text-center">
+                            <a href="{% url 'detalhe' item.filme.id %}">See more</a>
+                          </div>
+                        </div>
+                    </div>
+                   {% endfor %}
+                </div>
+                <div class="tab-pane fade" id="filmes">
+                    {% for filme in filmes %}
+                    <div class="col-lg-4">
+                        <div class="panel panel-default">
+                          <div class="panel-body">
+                            <p class="text-center"><img src="{{ filme.get_foto }}" height="200" width="150"></p>
+
+                            <p class="text-center" style="height: 40px;">
+                            Name: {{filme.nome}}
+                            </p>
+                          </div>
+                          <div class="panel-footer text-center">
+                            <a href="{% url 'detalhe' filme.id %}">See more</a>
+                          </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+{% endblock %}

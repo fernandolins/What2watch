@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block base_login %}
+  <ul class="nav navbar-nav navbar-right">
+            <li><button id="login"></button></li>
+          </ul>
+      {% csrf_token %}
+      <div id="fb-root"></div>
+
+      <script src="http://connect.facebook.net/en_US/all.js"></script>
+      
+      <script>
+            // initialize the library with the API key
+          FB.init({ appId: '424490127646893',oauth: true});
+
+            // fetch the status on load
+          FB.getLoginStatus(handleSessionResponse2);
+
+          $('#login').bind('click', function() {
+            console.log("aqui");
+            FB.login(handleSessionResponse,{scope: 'email,user_likes'});
+          });
+
+          $('#logout').bind('click', function() {
+              FB.logout(handleSessionResponse);
+          });
+
+          $('#disconnect').bind('click', function() {
+              FB.api({ method: 'Auth.revokeAuthorization' }, function(response) {
+                clearDisplay();
+            });
+          });
+
+            // no user, clear display
+          function clearDisplay() {
+              $('#user-info').hide('fast');
+          }
+
+            // handle a session response from any of the auth related calls
+          function handleSessionResponse(response) {
+              // if we dont have a session, just hide the user info
+              if (!(response.status=="connected")) {
+                clearDisplay();
+                return;
+              }
+
+              var data = {}
+              data["access_token"] = response.authResponse.accessToken;
+              data["facebook_id"] = response.authResponse.userID;
+              data["csrfmiddlewaretoken"] = '{{ csrf_token }}';
+              //console.log(response.authResponse);
+              //data["res"] = response;
+              //data["resAuth"] = response.authResponse;
+              var args = { type:'post', dataType:"json",async:false, url:"{% url 'home' %}", data:data,complete:done };
+          $.ajax(args);
+
+              // if we have a session, query for the user's profile picture and name
+          }
+
+          function handleSessionResponse2(response) {
+              // if we dont have a session, just hide the user info
+             console.log("apaguei reposnse 2");
+          }
+          var done2 = function(res, status) {
+              console.log("apaguei done2");
+          }
+            
+          var done = function(res, status) {
+              if (res.response == "true") {
+                var data = {};
+                // window.location.replace("{% url 'inicio' %}?"+this.data);
+              }
+              else{
+                window.location.href = "{% url 'entrou' %}";
+              }
+          } 
+      </script>
+{% endblock %}
+
+{%  block content %}
+<div class="row-fluid page-header">
+      <!-- Navbar
+      ================================================== -->
+      <div class="bs-docs-section clearfix">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="page-header">
+              <h1 id="navbar">Nossos Filmes</h1>
+            </div>
+            {% for filme in filmes %}
+            <div class="col-lg-4">
+                <div class="panel panel-default">
+                  <div class="panel-body">
+                    <p class="text-center"><img src="{{ filme.get_foto }}" height="200" width="150"></p>
+
+                    
+                  </div>
+                  <div class="panel-footer text-center">
+                    <p class="text-center" style="height: 40px;">
+                    Name: {{filme.nome}}
+                    </p>
+                  </div>
+                </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+{% endblock %}
