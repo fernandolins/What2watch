@@ -42,10 +42,6 @@ def inicio(request):
     usuario = Usuario.objects.get(facebook_id=id_)
     context['usuario'] = usuario
 
-    for fil in context['filmes']:
-        fil.link_foto = get_foto(fil.facebook_id, usuario.access_token)
-        fil.save()
-
     if 'logou' not in request.session:
         print 'chamou'
         filmes_recomendados = getFilmesRecomendados(usuario)
