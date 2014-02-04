@@ -101,7 +101,7 @@ class Filme(models.Model):
     def get_foto(self):
         if self.link_foto == 'N/A':
             return 'http://i.media-imdb.com/images/mobile/film-40x54.png'
-        return self.link_foto
+        return self.link_foto[:-14]
 
     def __unicode__(self):
         return "Nome: " + unicode(self.nome) + " - Genero: " + unicode(self.genero) + " - Sinopse: " + unicode(self.sinopse)
