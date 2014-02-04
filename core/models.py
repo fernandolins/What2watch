@@ -12,7 +12,6 @@ class Usuario(models.Model):
         try:
             facebook_usuario = Usuario.objects.get(facebook_id=face_id)
             facebook_usuario.access_token = accessToken
-            print accessToken
             facebook_usuario.save()
             return facebook_usuario
         except Usuario.DoesNotExist:
@@ -263,7 +262,7 @@ class FilmesRecomendados(models.Model):
 
     def get_or_create(self, _usuario, _filme, _score):
         try:
-            recomendado = Assistiu_Filme.objects.get(filme=_filme, usuario=_usuario)
+            recomendado = FilmesRecomendados.objects.get(usuario=_usuario, filme=_filme)
             recomendado.score = _score
             recomendado.save()
             return recomendado;

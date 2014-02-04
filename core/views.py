@@ -343,8 +343,5 @@ def getFilmesRecomendados(usuario):
 
 
     for recomendado in lista_:
-        filme = FilmesRecomendados.get_or_create(
-            usuario,
-            recomendado['filme'],
-            recomendado['score']
-        )
+        filme = FilmesRecomendados()
+        filme = filme.get_or_create(usuario, recomendado['filme'], recomendado['score'])
