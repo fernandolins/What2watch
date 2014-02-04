@@ -7,6 +7,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import login as auth_login, authenticate
+from django.contrib.auth.views import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
@@ -40,6 +41,11 @@ def inicio(request):
     id_ = request.user.username
     usuario = Usuario.objects.get(facebook_id=id_)
     context['usuario'] = usuario
+
+    for fil in context['filmes']:
+        fil.link_foto = get_foto(fil.facebook_id, usuario.access_token)
+        fil.save()
+
     if 'logou' not in request.session:
         print 'chamou'
         filmes_recomendados = getFilmesRecomendados(usuario)
@@ -64,6 +70,13 @@ def detalhe(request, filme_id):
     # print context['filme'].diretores.all()
 
     return render(request, 'detalhes.html', context)
+
+
+@login_required
+def logout_view(request):
+    logout(request)
+    return redirect('inicio')
+
 
 def home(request):
     if request.method == 'POST':
@@ -141,7 +154,7 @@ def get_movie_imdb_json(title):
 
 
 def get_character_imdb_json(name):
-    url = "http://www.imdb.com/xml/find?json=1&nr=1&nm=on&q={0}".format(name).replace(' ', '+');
+    url = u"http://www.imdb.com/xml/find?json=1&nr=1&nm=on&q={0}".format(name).replace(' ', '+');
     list_character_imdb_json = loads(urlopen(url).read())
     try:
         if 'name_popular' in list_character_imdb_json:
@@ -155,15 +168,24 @@ def get_character_imdb_json(name):
 
 
 def get_likes(id, access_token):
-    url = "https://graph.facebook.com/{0}/likes?access_token={1}&limit=1000".format(id, access_token)
+    url = u"https://graph.facebook.com/{0}/likes?access_token={1}&limit=1000".format(id, access_token)
     likes_json = loads(urlopen(url).read())
     return likes_json
+
+
+def get_foto(id, access_token):
+    url = u"https://graph.facebook.com/{0}/picture?type=large&access_token={1}".format(id, access_token)
+    return url
 
 
 def facebook_dados(facebook_json, access_token):
     # try:
     facebook_usuario = Usuario()
-    facebook_usuario = facebook_usuario.get_or_create(unicode(facebook_json['id']),unicode(facebook_json['name']),access_token)
+    facebook_usuario = facebook_usuario.get_or_create(
+        unicode(facebook_json['id']),
+        unicode(facebook_json['name']),
+        access_token
+    )
 
     likes = get_likes(facebook_json['id'], access_token)
     for like in likes['data']:
@@ -176,7 +198,7 @@ def facebook_dados(facebook_json, access_token):
                     like['id'],
                     movie_imdb['Plot'],
                     movie_imdb['Genre'],
-                    movie_imdb['Poster'],
+                    get_foto(like['id'], access_token),
                     movie_imdb['imdbID']
                 )
 

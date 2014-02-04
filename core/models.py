@@ -6,11 +6,14 @@ from django.db import models
 class Usuario(models.Model):
     facebook_id        = models.CharField(max_length=100, primary_key=True)
     facebook_nome      = models.CharField(max_length=100)
-    access_token       = models.CharField(max_length=200)
+    access_token       = models.CharField(max_length=300)
 
     def get_or_create(self, face_id, face_nome, accessToken):
         try:
             facebook_usuario = Usuario.objects.get(facebook_id=face_id)
+            facebook_usuario.access_token = accessToken
+            print accessToken
+            facebook_usuario.save()
             return facebook_usuario
         except Usuario.DoesNotExist:
             facebook_usuario = Usuario(facebook_id=face_id, facebook_nome=face_nome, access_token=accessToken)
@@ -74,7 +77,7 @@ class Filme(models.Model):
     nome = models.CharField(max_length=100, unique=True)
     sinopse = models.CharField(max_length=2000)
     genero = models.CharField(max_length=100)
-    link_foto = models.CharField(max_length=100)
+    link_foto = models.CharField(max_length=400)
     facebook_id = models.CharField(max_length=1000, unique=True)
     atores = models.ManyToManyField(Ator, through="Atuou_Filme")
     diretores = models.ManyToManyField(Diretor, through="Dirigiu_Filme")
@@ -101,7 +104,7 @@ class Filme(models.Model):
     def get_foto(self):
         if self.link_foto == 'N/A':
             return 'http://i.media-imdb.com/images/mobile/film-40x54.png'
-        return self.link_foto[:-14]
+        return self.link_foto
 
     def __unicode__(self):
         return "Nome: " + unicode(self.nome) + " - Genero: " + unicode(self.genero) + " - Sinopse: " + unicode(self.sinopse)

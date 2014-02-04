@@ -10,6 +10,8 @@ TEMPLATE_DEBUG = DEBUG
 
 ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
 
+LOGIN_URL = '/'
+
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )

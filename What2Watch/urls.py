@@ -10,7 +10,7 @@ urlpatterns = patterns('',
     url(r'^home', 'core.views.home', name='home'),
     url(r'^inicio', 'core.views.inicio', name='entrou'),
     url(r'^filme/(?P<filme_id>\d+)/detalhes', 'core.views.detalhe', name='detalhe'),
-    url(r'^logout/$', 'django.contrib.auth.views.logout', {'template_name': 'base_login.html'}, name='logout'),
+    url(r'^logout/$', 'core.views.logout_view', name='logout'),
     # url(r'^What2Watch/', include('What2Watch.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
