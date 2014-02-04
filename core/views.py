@@ -50,6 +50,8 @@ def inicio(request):
         print 'nao chamou'
     context['filmes_recomendados'] = FilmesRecomendados.objects.filter(usuario=usuario)
 
+    context['assistiu'] = Assistiu_Filme.objects.filter(usuario_id=usuario)
+
     return render(request, 'index.html', context)
 
 

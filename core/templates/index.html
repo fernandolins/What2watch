@@ -24,6 +24,7 @@
     		<ul class="nav nav-tabs page-header" style="margin-bottom: 15px;">
                 <li class="active"><a href="#home" data-toggle="tab">Recomendados</a></li>
                 <li><a href="#filmes" data-toggle="tab">Filmes</a></li>
+                <li><a href="#assistiu" data-toggle="tab">Vistos</a></li>
               </ul>
               <div id="myTabContent" class="tab-content">
                 <div class="tab-pane fade active in" id="home">
@@ -61,6 +62,24 @@
                         </div>
                     </div>
                     {% endfor %}
+                </div>
+                <div class="tab-pane fade active in" id="assistiu">
+                    {% for item in assistiu %}
+                    <div class="col-lg-4">
+                        <div class="panel panel-default">
+                          <div class="panel-body">
+                            <p class="text-center"><img src="{{ item.filme_id.get_foto }}" height="200" width="150"></p>
+
+                            <p class="text-center" style="height: 40px;">
+                            Name: {{ item.filme_id.nome }}
+                            </p>
+                          </div>
+                          <div class="panel-footer text-center">
+                            <a href="{% url 'detalhe' item.filme_id.id %}">See more</a>
+                          </div>
+                        </div>
+                    </div>
+                   {% endfor %}
                 </div>
               </div>
           </div>
