@@ -260,3 +260,17 @@ class FilmesRecomendados(models.Model):
     usuario = models.ForeignKey(Usuario)
     filme = models.ForeignKey(Filme)
     score = models.PositiveIntegerField(u'Score')
+
+    def get_or_create(self, _usuario, _filme, _score):
+        try:
+            recomendado = Assistiu_Filme.objects.get(filme=_filme, usuario=_usuario)
+            recomendado.score = _score
+            recomendado.save()
+            return recomendado;
+        except FilmesRecomendados.DoesNotExist:
+            recomendado = FilmesRecomendados(
+                usuario=_usuario,
+                filme=_filme,
+                score=_score)
+            recomendado.save()
+            return recomendado
