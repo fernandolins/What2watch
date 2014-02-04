@@ -19,6 +19,7 @@ from .models import (
     Like_Diretor, Like_Escritor,
     Dirigiu_Filme, Atuou_Filme,
     Escreveu_Filme,
+    FilmesRecomendados
 )
 # Create your views here.
 
@@ -28,6 +29,41 @@ def index(request):
     else:
         filmes = Filme.objects.all()
         return render(request, 'base_login.html', {'filmes': filmes})
+
+
+@login_required
+def inicio(request):
+    context = {}
+
+    context['filmes'] = Filme.objects.all()
+
+    id_ = request.user.username
+    usuario = Usuario.objects.get(facebook_id=id_)
+    context['usuario'] = usuario
+    if 'logou' not in request.session:
+        print 'chamou'
+        filmes_recomendados = getFilmesRecomendados(usuario)
+        request.session['logou'] = True
+    else:
+        print 'nao chamou'
+    context['filmes_recomendados'] = FilmesRecomendados.objects.filter(usuario=usuario)
+
+    return render(request, 'index.html', context)
+
+
+@login_required
+def detalhe(request, filme_id):
+    context = {}
+
+    context['filme'] = Filme.objects.get(id=filme_id)
+
+    id_ = request.user.username
+    usuario = Usuario.objects.get(facebook_id=id_)
+    context['usuario'] = usuario
+    # print dir(context['filme'].atores)
+    # print context['filme'].diretores.all()
+
+    return render(request, 'detalhes.html', context)
 
 def home(request):
     if request.method == 'POST':
@@ -64,7 +100,7 @@ def home(request):
                 # return render_to_response('base_login.html', locals(), context_instance=RequestContext(request), )
         else:
             print 'invalido'
-            return HttpResponse(status=400)
+            return HttpResponse(status=404)
         # except Exception as e:
         #     print e
         #     raise e
@@ -199,35 +235,7 @@ def facebook_dados(facebook_json, access_token):
     return HttpResponse(status=200)
     # except Exception as e:
     #     print 'dados facebook', e
-    #     raise e
     #     return HttpResponse(status=500)
-
-
-@login_required
-def inicio(request):
-    context = {}
-
-    context['filmes'] = Filme.objects.all()
-
-    id_ = request.user.username
-    usuario = Usuario.objects.get(facebook_id=id_)
-    context['usuario'] = usuario
-    filmes_recomendados = getFilmesRecomendados(usuario)
-    context['filmes_recomendados'] = filmes_recomendados
-
-    return render(request, 'index.html', context)
-
-
-@login_required
-def detalhe(request, filme_id):
-    context = {}
-
-    context['filme'] = Filme.objects.get(id=filme_id)
-
-    # print dir(context['filme'].atores)
-    # print context['filme'].diretores.all()
-
-    return render(request, 'detalhes.html', context)
 
 
 def getFilmesRecomendados(usuario):
@@ -313,4 +321,11 @@ def getFilmesRecomendados(usuario):
                 m["score"] += 1
                 print "bateu genero"
 
-    return lista_
+
+    for recomendado in lista_:
+        recomenda = FilmesRecomendados(
+            usuario=usuario,
+            filme=recomendado['filme'],
+            score=recomendado['score']
+        )
+        recomenda.save()

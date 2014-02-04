@@ -1,5 +1,14 @@
 {% extends 'base.html' %}
 
+{% block base_login %} 
+
+    <p class="text-right" style="color: white; margin-top: 1em;">
+        Olá, {{ usuario.facebook_nome }}! 
+        <a href="{% url 'logout' %}"> Logout</a>
+    </p>
+
+{% endblock %}
+
 {% block content %}
 
 <div class="row-fluid page-header">

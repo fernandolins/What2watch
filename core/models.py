@@ -4,8 +4,8 @@ from django.db import models
 # Create your models here.
 
 class Usuario(models.Model):
-    facebook_id        = models.CharField(max_length=50, primary_key=True)
-    facebook_nome      = models.CharField(max_length=50)
+    facebook_id        = models.CharField(max_length=100, primary_key=True)
+    facebook_nome      = models.CharField(max_length=100)
     access_token       = models.CharField(max_length=200)
 
     def get_or_create(self, face_id, face_nome, accessToken):
@@ -22,7 +22,7 @@ class Usuario(models.Model):
 
 
 class Pessoa(models.Model):
-    nome = models.CharField(max_length=30, unique=True)
+    nome = models.CharField(max_length=100, unique=True)
 
     class Meta:
         abstract = True
@@ -71,16 +71,16 @@ class Escritor(Pessoa):
 
 
 class Filme(models.Model):
-    nome = models.CharField(max_length=30, unique=True)
+    nome = models.CharField(max_length=100, unique=True)
     sinopse = models.CharField(max_length=2000)
-    genero = models.CharField(max_length=20)
+    genero = models.CharField(max_length=100)
     link_foto = models.CharField(max_length=100)
     facebook_id = models.CharField(max_length=1000, unique=True)
     atores = models.ManyToManyField(Ator, through="Atuou_Filme")
     diretores = models.ManyToManyField(Diretor, through="Dirigiu_Filme")
     escritores = models.ManyToManyField(Escritor, through="Escreveu_Filme")
     usuarios  = models.ManyToManyField(Usuario, through="Assistiu_Filme")
-    imdb_id = models.CharField(max_length=20, unique=True)
+    imdb_id = models.CharField(max_length=100, unique=True)
 
     def get_or_create(self, nome_, facebook_id_, sinopse_, genero_, link_foto_, imdb_id_):
         try:
@@ -251,3 +251,9 @@ class Assistiu_Filme(models.Model):
 
     def __unicode__(self):
         return "Filme: " + unicode(self.filme_id.nome) + " - Usuario: " + unicode(self.usuario_id.facebook_nome)
+
+
+class FilmesRecomendados(models.Model):
+    usuario = models.ForeignKey(Usuario)
+    filme = models.ForeignKey(Filme)
+    score = models.PositiveIntegerField(u'Score')

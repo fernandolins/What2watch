@@ -2,3 +2,6 @@
 *.db
 urls.pyc
 .DS_Store
+staticfiles
+
+local_settings.py
