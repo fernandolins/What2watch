@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.db import models
+from django.db import transaction, IntegrityError
+
 
 # Create your models here.
 
@@ -73,11 +75,11 @@ class Escritor(Pessoa):
 
 
 class Filme(models.Model):
-    nome = models.CharField(max_length=100, unique=True)
+    nome = models.CharField(max_length=100)
     sinopse = models.CharField(max_length=2000)
     genero = models.CharField(max_length=100)
     link_foto = models.CharField(max_length=400)
-    facebook_id = models.CharField(max_length=1000, unique=True)
+    facebook_id = models.CharField(max_length=1000)
     atores = models.ManyToManyField(Ator, through="Atuou_Filme")
     diretores = models.ManyToManyField(Diretor, through="Dirigiu_Filme")
     escritores = models.ManyToManyField(Escritor, through="Escreveu_Filme")
@@ -89,15 +91,22 @@ class Filme(models.Model):
             filme = Filme.objects.get(facebook_id=facebook_id_, imdb_id=imdb_id_)
             return filme
         except Filme.DoesNotExist:
-            filme = Filme(
-                nome=nome_,
-                sinopse=sinopse_,
-                genero=genero_,
-                link_foto=link_foto_,
-                facebook_id=facebook_id_,
-                imdb_id=imdb_id_
-            )
-            filme.save()
+            try:
+                filme = Filme(
+                    nome=nome_,
+                    sinopse=sinopse_,
+                    genero=genero_,
+                    link_foto=link_foto_,
+                    facebook_id=facebook_id_,
+                    imdb_id=imdb_id_
+                )
+                filme.save()
+            except IntegrityError:
+                transaction.rollback()
+                print imdb_id_
+                filme = Filme.objects.get(imdb_id=imdb_id_)
+                if filme is None:
+                    filme = Filme.objects.get(facebook_id=facebook_id_)
             return filme
 
     def get_foto(self):

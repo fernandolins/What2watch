@@ -197,53 +197,56 @@ def facebook_dados(facebook_json, access_token):
     likes = get_likes(facebook_json['id'], access_token)
     for like in likes['data']:
         if like['category'] == "Movie":
-            movie_imdb = get_movie_omdb_json(like['name'])
-            if movie_imdb and 'Error' not in movie_imdb:
-                filme = Filme()
-                filme = filme.get_or_create(
-                    movie_imdb['Title'],
-                    like['id'],
-                    movie_imdb['Plot'],
-                    movie_imdb['Genre'],
-                    get_foto(like['id'], access_token),
-                    movie_imdb['imdbID']
-                )
+            if not Filme.objects.filter(facebook_id=like['id']).exists():
+                movie_imdb = get_movie_omdb_json(like['name'])
+                if movie_imdb and 'Error' not in movie_imdb:
+                    filme = Filme()
+                    filme = filme.get_or_create(
+                        movie_imdb['Title'],
+                        like['id'],
+                        movie_imdb['Plot'],
+                        movie_imdb['Genre'],
+                        get_foto(like['id'], access_token),
+                        movie_imdb['imdbID']
+                    )
 
-                assistiu = Assistiu_Filme()
-                assistiu = assistiu.get_or_create(filme, facebook_usuario)
+                    assistiu = Assistiu_Filme()
+                    assistiu = assistiu.get_or_create(filme, facebook_usuario)
 
-                diretores = movie_imdb['Director'].replace(', ',',').split(',')
-                for nome_ in diretores:
-                    diretor = Diretor()
-                    diretor = diretor.get_or_create(nome_)
+                    diretores = movie_imdb['Director'].replace(', ',',').split(',')
+                    for nome_ in diretores:
+                        diretor = Diretor()
+                        diretor = diretor.get_or_create(nome_)
 
-                    dirigiu = Dirigiu_Filme()
-                    dirigiu = dirigiu.get_or_create(filme, diretor)
+                        dirigiu = Dirigiu_Filme()
+                        dirigiu = dirigiu.get_or_create(filme, diretor)
 
-                atores = movie_imdb['Actors'].replace(', ',',').split(',')
-                for nome_ in atores:
-                    ator = Ator()
-                    ator = ator.get_or_create(nome_)
+                    atores = movie_imdb['Actors'].replace(', ',',').split(',')
+                    for nome_ in atores:
+                        ator = Ator()
+                        ator = ator.get_or_create(nome_)
 
-                    atuou = Atuou_Filme()
-                    atuou = atuou.get_or_create(filme, ator)
+                        atuou = Atuou_Filme()
+                        atuou = atuou.get_or_create(filme, ator)
 
-                escritores = movie_imdb['Writer'].replace(', ',',').split(',')
-                for nome_ in escritores:
-                    escritor = Escritor()
-                    escritor = escritor.get_or_create(nome_)
+                    escritores = movie_imdb['Writer'].replace(', ',',').split(',')
+                    for nome_ in escritores:
+                        escritor = Escritor()
+                        escritor = escritor.get_or_create(nome_)
 
-                    escreveu = Escreveu_Filme()
-                    escreveu = escreveu.get_or_create(filme, escritor)
+                        escreveu = Escreveu_Filme()
+                        escreveu = escreveu.get_or_create(filme, escritor)
 
-        elif like['category'] == "Author": 
-            character_imdb = get_character_imdb_json(like['name'])
-            if character_imdb:
-                if character_imdb['description'].startswith('Writer'):
-                    escritor = Escritor(nome=like['name'])
+        elif like['category'] == "Author":
+            if not Escritor.objects.filter(name=like['name']).exists():
+                character_imdb = get_character_imdb_json(like['name'])
+                if character_imdb:
+                    if character_imdb['description'].startswith('Writer'):
+                        escritor = Escritor()
+                        escritor = escritor.get_or_create(like['name'])
 
-                    like_escritor = Like_Escritor()
-                    like_escritor = like_escritor.get_or_create(facebook_usuario, escritor)
+                        like_escritor = Like_Escritor()
+                        like_escritor = like_escritor.get_or_create(facebook_usuario, escritor)
 
         elif like['category'] == "Actor/director":
             character_imdb = get_character_imdb_json(like['name'])
