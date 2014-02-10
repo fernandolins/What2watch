@@ -38,9 +38,15 @@ def inicio(request):
 
     context['filmes'] = Filme.objects.all()
 
+    print request.user
     id_ = request.user.username
     usuario = Usuario.objects.get(facebook_id=id_)
     context['usuario'] = usuario
+
+    # filmes = Filme.objects.all()
+    # for filme in filmes:
+    #     filme.link_foto = get_foto(filme.facebook_id, usuario.access_token)
+    #     filme.save()
 
     if 'logou' not in request.session:
         print 'chamou'
@@ -120,6 +126,7 @@ def home(request):
     # return redirect('/inicio')
     return HttpResponse(status=500)
 
+
 def get_movie_omdb_json(title):
     title = unicode(title)
     try:
@@ -133,6 +140,7 @@ def get_movie_omdb_json(title):
         return get_movie_imdb_json(title)
 
     return movie_imdb_json
+
 
 def get_movie_imdb_json(title):
     url = u"http://www.imdb.com/xml/find?json=1&nr=1&tt=on&q={0}".format(title).replace(' ', '+');
@@ -173,7 +181,8 @@ def get_likes(id, access_token):
 
 def get_foto(id, access_token):
     url = u"https://graph.facebook.com/{0}/picture?type=large&access_token={1}".format(id, access_token)
-    return url
+    response = urlopen(url)
+    return response.url
 
 
 def facebook_dados(facebook_json, access_token):
@@ -242,7 +251,7 @@ def facebook_dados(facebook_json, access_token):
                 if character_imdb['description'].startswith('Actress') or character_imdb['description'].startswith('Actor'):
                     ator = Ator()
                     ator = ator.get_or_create(like['name'])
-                    
+
                     like_ator = Like_Ator()
                     like_ator = like_ator.get_or_create(facebook_usuario, ator)
                 elif character_imdb['description'].startswith('Director') or character_imdb['description'].startswith('Producer'):
@@ -274,7 +283,7 @@ def getFilmesRecomendados(usuario):
             else:
                 add = False
                 stop =True
-        
+
         if add == True:
             if movie not in next_filmes:
                 next_filmes.append(movie)
@@ -289,7 +298,7 @@ def getFilmesRecomendados(usuario):
     lista_likes_atores = []
     lista_likes_diretor = []
     likes_both = []
-    
+
     for like in likes_atores:
         lista_likes_atores.append(like.ator_id)
 

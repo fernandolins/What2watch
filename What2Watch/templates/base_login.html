@@ -1,10 +1,9 @@
 {% extends 'base.html' %}
 
 {% block base_login %}
-  <ul class="nav navbar-nav navbar-right">
-     
-            <li><a id="login" href="#pleaseWaitDialog" role="button" class="btn" data-toggle="modal"></a></li>
-          </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a id="login" href="#pleaseWaitDialog" role="button" class="btn" data-toggle="modal"></a></li>
+      </ul>
       {% csrf_token %}
       <div id="fb-root"></div>
 
@@ -12,7 +11,7 @@
       
       <script>
             // initialize the library with the API key
-          FB.init({ appId: '691160994240801',oauth: true});
+          FB.init({ appId: '424490127646893',oauth: true});
 
             // fetch the status on load
           FB.getLoginStatus(handleSessionResponse2);
