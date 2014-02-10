@@ -161,7 +161,7 @@ def get_movie_imdb_json(title):
 
 def get_character_imdb_json(name):
     url = u"http://www.imdb.com/xml/find?json=1&nr=1&nm=on&q={0}".format(unicode(name)).replace(' ', '+');
-    print 'jose', url
+    print url
     list_character_imdb_json = loads(urlopen(url).read())
     try:
         if 'name_popular' in list_character_imdb_json:
