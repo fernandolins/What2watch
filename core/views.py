@@ -43,10 +43,10 @@ def inicio(request):
     usuario = Usuario.objects.get(facebook_id=id_)
     context['usuario'] = usuario
 
-    # filmes = Filme.objects.all()
-    # for filme in filmes:
-    #     filme.link_foto = get_foto(filme.facebook_id, usuario.access_token)
-    #     filme.save()
+    filmes = Filme.objects.all()
+    for filme in filmes:
+        filme.link_foto = get_foto(filme.facebook_id, usuario.access_token)
+        filme.save()
 
     if 'logou' not in request.session:
         print 'chamou'
