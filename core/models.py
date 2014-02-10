@@ -86,7 +86,7 @@ class Filme(models.Model):
 
     def get_or_create(self, nome_, facebook_id_, sinopse_, genero_, link_foto_, imdb_id_):
         try:
-            filme = Filme.objects.get(facebook_id=facebook_id_)
+            filme = Filme.objects.get(facebook_id=facebook_id_, imdb_id=imdb_id_)
             return filme
         except Filme.DoesNotExist:
             filme = Filme(
