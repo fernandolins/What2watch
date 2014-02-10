@@ -238,7 +238,7 @@ def facebook_dados(facebook_json, access_token):
                         escreveu = escreveu.get_or_create(filme, escritor)
 
         elif like['category'] == "Author":
-            if not Escritor.objects.filter(name=like['name']).exists():
+            if not Escritor.objects.filter(nome=like['name']).exists():
                 character_imdb = get_character_imdb_json(like['name'])
                 if character_imdb:
                     if character_imdb['description'].startswith('Writer'):
