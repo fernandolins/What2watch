@@ -1,0 +1,35 @@
+Ter instalado:
+
+python 2.7
+
+Virtualenv - http://pypi.python.org/pypi/virtualenv
+
+PostgreSQL 9.1.5
+
+
+Após isso, fazer:
+
+$ cd path/to/project/what2watch
+
+$ mkvirtualenv watch
+
+$ pip install -r requirements.txt
+
+$ createdb watch
+
+Atualizar settings.py:
+DATABASES = {
+    'default': { 
+        'ENGINE': 'django.db.backends.postgresql_psycopg2', 
+        'NAME': 'watch',
+        'USER': 'root',
+        'PASSWORD': 'your_password',
+    }
+}
+
+$ python manage.py syncdb --all
+
+$ python manage.py runserver
+
+
+
